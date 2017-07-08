@@ -5,6 +5,10 @@
     <title>demo</title>
 </head>
 <body>
-    完美
+    <ul>
+        {% for list  in userInfo %}
+            <li>{{list.uname}}</li> 
+        {% endfor %}
+    </ul>
 </body>
 </html>
