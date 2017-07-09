@@ -78,8 +78,6 @@ def login_handle(request):
 def index(request):
     userlist = userInfo.objects.all()
     context = {'userInfo': userlist}
-    # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    # return HttpResponse(BASE_DIR)
     return render(request, 'ttsx_user/index.html', context)
 
 
