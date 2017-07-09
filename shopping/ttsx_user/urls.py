@@ -6,8 +6,12 @@ urlpatterns = [
     # 注册
     url(r'^register/', views.register),
     url(r'^register_handle/', views.register_handle),
+    # 判断用户名是否存在
+    url(r'^isName/', views.isName),
     # 登录
     url(r'^login/', views.login),
+    # 登录处理
+    url(r'^login_handle/', views.login_handle),
     # 用户
     url(r'^$', views.index),
 

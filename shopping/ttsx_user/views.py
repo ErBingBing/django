@@ -1,8 +1,9 @@
 # coding=utf-8
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from hashlib import sha1
 from models import *
+import datetime
 
 
 # Create your views here.
@@ -19,22 +20,61 @@ def register_handle(request):
     upwd = post.get('user_pwd')
     uemil = post.get('user_email')
     # 密码加密
-    s1 = sha1()
-    s1.update(upwd)
-    s1_pwd = s1.hexdigest()
+    s1_pwd = s1(upwd)
     # 创建对象
     userinfo = userInfo()
     userinfo.uname = uname
     userinfo.upwd = s1_pwd
     userinfo.umail = uemil
-    # userinfo.save()
-    # return HttpResponse('ok')
+    userinfo.save()
     return redirect('/user/login/')
 
+
+# 判断用户名是否存在
+def isName(request):
+    uname = request.GET.get('uname')
+    result = userInfo.objects.filter(uname=uname).count()
+    return JsonResponse({'result': result})
+
+
+# 登录
 def login(request):
-    content = {'title':'登录'}
+    uname = request.COOKIES.get('usercook', '')
+    content = {'title': '登录', 'uname': uname}
     return render(request, 'ttsx_user/login.html', content)
 
+
+# 登录处理
+def login_handle(request):
+    uname = request.POST.get('username')
+    upwd = request.POST.get('userpwd')
+    ucookie = request.POST.get('ucookie')
+    s1_pwd = s1(upwd)
+
+    unamelen = userInfo.objects.filter(uname=uname)
+    if (len(unamelen) == 0):
+        # 用户名错误
+        countent = {'uerro': 1, 'uname': uname, 'upwd': upwd, 'title': '登录'}
+        return render(request, 'ttsx_user/login.html/', countent)
+    else:
+        upwdlen = userInfo.objects.filter(upwd=s1_pwd)
+        if(len(upwdlen) == 0):
+            # 密码错误
+            countent = {'perro': 1, 'uname': uname,
+                        'upwd': upwd, 'title': '登录'}
+            return render(request, 'ttsx_user/login.html/', countent)
+        else:
+            response = redirect('/user/')
+            if ucookie == '1':
+                response.set_cookie(
+                    'usercook', uname, expires=datetime.datetime.now() + datetime.timedelta(days=7))
+            else:
+                response.set_cookie('usercook', '', max_age=-1)
+                # return render(request, 'ttsx_user/index.html/')
+            return response
+
+
+# 首页
 def index(request):
     userlist = userInfo.objects.all()
     context = {'userInfo': userlist}
@@ -43,7 +83,15 @@ def index(request):
     return render(request, 'ttsx_user/index.html', context)
 
 
-# test views
+# sha1加密
+def s1(upwd):
+    s1 = sha1()
+    s1.update(upwd)
+    s1_pwd = s1.hexdigest()
+    return s1_pwd
+
+
+# 测试函数
 def test(request):
     return render(request, 'base.html', {'title': 'haha'})
     # return HttpResponse('ok')
