@@ -9,7 +9,7 @@ import datetime
 # Create your views here.
 # 注册
 def register(request):
-    content = {'title': '注册'}
+    content = {'title': '注册', 'top': '0'}
     return render(request, 'ttsx_user/register.html', content)
 
 
@@ -40,7 +40,7 @@ def isName(request):
 # 登录
 def login(request):
     uname = request.COOKIES.get('usercook', '')
-    content = {'title': '登录', 'uname': uname}
+    content = {'title': '登录', 'uname': uname, 'top': '0'}
     return render(request, 'ttsx_user/login.html', content)
 
 
@@ -54,14 +54,16 @@ def login_handle(request):
     unamelen = userInfo.objects.filter(uname=uname)
     if (len(unamelen) == 0):
         # 用户名错误
-        countent = {'uerro': 1, 'uname': uname, 'upwd': upwd, 'title': '登录'}
+        countent = {'uerro': 1, 'uname': uname,
+                    'upwd': upwd, 'title': '登录', 'top': '0'}
         return render(request, 'ttsx_user/login.html/', countent)
     else:
         upwdlen = userInfo.objects.filter(upwd=s1_pwd)
+        request.session['uid'] = unamelen[0].id
         if(len(upwdlen) == 0):
             # 密码错误
             countent = {'perro': 1, 'uname': uname,
-                        'upwd': upwd, 'title': '登录'}
+                        'upwd': upwd, 'title': '登录', 'top': '0'}
             return render(request, 'ttsx_user/login.html/', countent)
         else:
             response = redirect('/user/')
@@ -81,7 +83,34 @@ def index(request):
     return render(request, 'ttsx_user/index.html', context)
 
 
+# 用户页面个人信息
+def info(request):
+    user = userInfo.objects.get(pk=request.session['uid'])
+    content = {'title': '用户中心', 'username': user.uname, 'email': user.umail}
+    return render(request, 'ttsx_user/info.html', content)
+
+
+# 用户页面订单
+def order(request):
+    content = {'title':'用户中心'}
+    return render(request, 'ttsx_user/order.html', content)
+
+
+# 用户页面收货地址
+def site(request):
+    user = userInfo.objects.get(pk=request.session['uid'])
+    if request.method == 'POST':
+        user.ushou = request.POST.get('ushou')
+        user.uaddress = request.POST.get('uaddress')
+        user.ucode = request.POST.get('ucode')
+        user.uphone = request.POST.get('uphone')
+        user.save()
+    content = {'title':'用户中心', 'user':user}
+    return render(request, 'ttsx_user/site.html', content)
+
 # sha1加密
+
+
 def s1(upwd):
     s1 = sha1()
     s1.update(upwd)
