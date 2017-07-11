@@ -11,7 +11,7 @@ class userInfo(models.Model):
     upwd = models.CharField(max_length=40)
     # 邮箱
     umail = models.CharField(max_length=40)
-    # 收货
+    # 收货人
     ushou = models.CharField(max_length=40, default='')
     # 地址
     uaddress = models.CharField(max_length=40, default='')
