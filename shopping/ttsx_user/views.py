@@ -4,6 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from hashlib import sha1
 from models import *
 import datetime
+from user_decorators import *
 
 
 # Create your views here.
@@ -84,6 +85,7 @@ def index(request):
 
 
 # 用户页面个人信息
+@user_long
 def info(request):
     user = userInfo.objects.get(pk=request.session['uid'])
     content = {'title': '用户中心', 'username': user.uname, 'email': user.umail}
@@ -91,12 +93,14 @@ def info(request):
 
 
 # 用户页面订单
+@user_long
 def order(request):
-    content = {'title':'用户中心'}
+    content = {'title': '用户中心'}
     return render(request, 'ttsx_user/order.html', content)
 
 
 # 用户页面收货地址
+@user_long
 def site(request):
     user = userInfo.objects.get(pk=request.session['uid'])
     if request.method == 'POST':
@@ -105,7 +109,7 @@ def site(request):
         user.ucode = request.POST.get('ucode')
         user.uphone = request.POST.get('uphone')
         user.save()
-    content = {'title':'用户中心', 'user':user}
+    content = {'title': '用户中心', 'user': user}
     return render(request, 'ttsx_user/site.html', content)
 
 # sha1加密
