@@ -125,4 +125,3 @@ def s1(upwd):
 # 测试函数
 def test(request):
     return render(request, 'base.html', {'title': 'haha'})
-    # return HttpResponse('ok')
