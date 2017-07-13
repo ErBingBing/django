@@ -38,6 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ttsx_user',
+    'ttsx_goods',
+    'tinymce',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -49,6 +51,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'ttsx_user.Middleware.UrlMiddleware',
 )
 
 ROOT_URLCONF = 'shopping.urls'
@@ -56,7 +59,7 @@ ROOT_URLCONF = 'shopping.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -106,5 +109,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
+    os.path.join(BASE_DIR, 'static'),
 ]
+
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'advanced',
+    'width': 600,
+    'height': 400,
+}

@@ -6,7 +6,7 @@
 		error_pass = true
 		$('.name_input').blur(function(){
 			var len = $(this).val().length
-			if(len<5||len>20){
+			if(len<1||len>20){
 				$('.user_error').html('请输入5-20个字符的用户名').show();
 				error_name = false;
 			}else{
@@ -16,7 +16,7 @@
 		})
 		$('.pass_input').blur(function(){
 			var len = $(this).val().length
-			if(len<8||len>20){
+			if(len<1||len>20){
 				$('.pwd_error').html('密码最少8位，最长20位').show();
 				error_pass = false
 			}else{
