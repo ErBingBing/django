@@ -13,14 +13,17 @@ urlpatterns = [
     # 登录处理
     url(r'^login_handle/', views.login_handle),
     # 用户
-    url(r'^$', views.index),
+    # url(r'^$', views.index),
+    # 用户退出
+    url(r'^loginout/', views.loginout),
     # 用户信息
     url(r'^info/', views.info),
     # 用户订单
     url(r'^order/', views.order),
     # 用户收货地址
     url(r'^site/', views.site),
-    
+
+
 
 
 

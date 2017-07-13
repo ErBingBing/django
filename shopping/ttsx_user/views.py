@@ -61,13 +61,15 @@ def login_handle(request):
     else:
         upwdlen = userInfo.objects.filter(upwd=s1_pwd)
         request.session['uid'] = unamelen[0].id
+        request.session['uanme'] = uname
         if(len(upwdlen) == 0):
             # 密码错误
             countent = {'perro': 1, 'uname': uname,
                         'upwd': upwd, 'title': '登录', 'top': '0'}
             return render(request, 'ttsx_user/login.html/', countent)
         else:
-            response = redirect('/user/')
+            urlpath = request.session.get('url_path', '/')
+            response = redirect(urlpath)
             if ucookie == '1':
                 response.set_cookie(
                     'usercook', uname, expires=datetime.datetime.now() + datetime.timedelta(days=7))
@@ -78,17 +80,24 @@ def login_handle(request):
 
 
 # 首页
-def index(request):
-    userlist = userInfo.objects.all()
-    context = {'userInfo': userlist}
-    return render(request, 'ttsx_user/index.html', context)
+# def index(request):
+#     userlist = userInfo.objects.all()
+#     context = {'userInfo': userlist}
+#     return render(request, 'ttsx_user/index.html', context)
+
+
+# 退出
+def loginout(request):
+    request.session.flush()
+    return redirect('/user/login/')
 
 
 # 用户页面个人信息
 @user_long
 def info(request):
     user = userInfo.objects.get(pk=request.session['uid'])
-    content = {'title': '用户中心', 'username': user.uname, 'email': user.umail}
+    content = {'title': '用户中心', 'username': user.uname,
+               'email': user.umail, 'display': '1'}
     return render(request, 'ttsx_user/info.html', content)
 
 
